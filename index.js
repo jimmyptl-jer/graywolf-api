@@ -23,6 +23,12 @@ app.use(cookieParser());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://jimmytechhub.com/"],
+    credentials: true,
+  })
+);
 app.use(cors())
 
 app.use('/api/contact', contactRoutes);
