@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
 
 import connectDB from './Config/db.js';
+import authRoutes from './Routes/auth.route.js'
 import contactRoutes from './Routes/contact.route.js';
 import postRoutes from './Routes/post.route.js';
 import projectRoutes from './Routes/project.route.js';
@@ -32,7 +33,7 @@ app.use(
 app.use('/api/contact', contactRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/project', projectRoutes);
-
+app.use('/api/auth', authRoutes)
 // Error handling middleware
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
