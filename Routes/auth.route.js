@@ -2,8 +2,6 @@ import express from 'express';
 import { check } from 'express-validator';
 import { registerUser, loginUser } from '../Controller/auth.controller.js';
 
-import verifyToken from '../Middleware/auth.js';
-
 const router = express.Router();
 
 router.post(
