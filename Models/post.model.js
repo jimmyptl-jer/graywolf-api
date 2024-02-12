@@ -1,15 +1,26 @@
 import mongoose from "mongoose";
 
 const postSchema = mongoose.Schema({
-  userId: { type: String },
-  title: { type: String, required: true },
-  author: { type: String, required: true },
-  description: { type: String, required: true },
-  category: [{ type: String, required: true }],
-  // image: [{
-  //   type: String
-  // }],
-  date: { type: Date },
+  title: {
+    type: String,
+    required: true
+  },
+  author: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  },
+  category: [{
+    type: String,
+    required: true
+  }],
+  imageUrls: [{
+    type: String,
+    required: true
+  }],
   lastUpdate: { type: Date }
 })
 

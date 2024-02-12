@@ -9,8 +9,10 @@ import connectDB from './Config/db.js';
 import contactRoutes from './Routes/contact.route.js';
 import postRoutes from './Routes/post.route.js';
 import projectRoutes from './Routes/project.route.js';
+import cloudinaryConnect from './Config/cloudinary.js';
 
 dotenv.config();
+
 
 const app = express();
 
@@ -44,6 +46,7 @@ const PORT = 3000;
 
 const startServer = async () => {
   await connectDB();
+  await cloudinaryConnect();
   app.listen(PORT, () => console.log(`Server is listening on the port ${PORT}`));
 };
 
