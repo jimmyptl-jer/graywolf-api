@@ -13,7 +13,6 @@ import cloudinaryConnect from './Config/cloudinary.js';
 
 dotenv.config();
 
-
 const app = express();
 
 app.use(express.json());
@@ -25,22 +24,19 @@ const __dirname = path.dirname(__filename);
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://jimmytechhub.com/"],
+    origin: ["http://localhost:5173", "https://jimmytechhub.com"],
     credentials: true,
   })
 );
-app.use(cors())
 
 app.use('/api/contact', contactRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/project', projectRoutes);
 
-
-// Middleware
+// Error handling middleware
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Internal Server Error';
-
   res.status(statusCode).json({
     success: false,
     message: message,
@@ -48,12 +44,17 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
-  await connectDB();
-  await cloudinaryConnect();
-  app.listen(PORT, () => console.log(`Server is listening on the port ${PORT}`));
+  try {
+    await connectDB();
+    await cloudinaryConnect();
+    app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
+  } catch (error) {
+    console.error('Error starting server:', error);
+    process.exit(1); // Exit with non-zero status code to indicate failure
+  }
 };
 
 startServer();
