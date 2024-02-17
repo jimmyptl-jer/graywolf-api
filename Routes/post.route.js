@@ -18,7 +18,7 @@ const upload = multer({
 
 
 router.post(
-  '/',
+  '/create',
   upload.array("imageFiles", 6),
   async (req, res) => {
     try {
