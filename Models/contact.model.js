@@ -13,7 +13,7 @@ const contactSchema = new mongoose.Schema({
     type: String,
   },
   // Define the 'phone' field with the data type 'String'
-  phone: {
+  subject: {
     type: String,
   },
   message: {
