@@ -1,9 +1,8 @@
 import express from 'express';
-import path from 'path';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
+import serverless from "serverless-http";
 
 import connectDB from './Config/db.js';
 import authRoutes from './Routes/auth.route.js'
@@ -19,9 +18,6 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// Get the current module's directory using import.meta.url
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 app.use(
   cors({
@@ -59,3 +55,4 @@ const startServer = async () => {
 };
 
 startServer();
+export const handler = serverless(app);

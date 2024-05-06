@@ -5,25 +5,25 @@ const postSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  author: {
-    type: String,
-    required: true
-  },
   description: {
     type: String,
     required: true
   },
-  category: [{
+  videoLink: {
+    type: String
+  },
+  blogLink: {
+    type: String
+  },
+  imageUrl: {
     type: String,
-    required: true
-  }],
-  imageUrls: [{
-    type: String,
-    required: true
-  }],
-  lastUpdate: { type: Date }
-})
+  },
+  lastUpdate: {
+    type: Date,
+    default: Date.now
+  }
+});
 
-const Post = mongoose.model('Post', postSchema)
+const Post = mongoose.model("Post", postSchema);
 
 export default Post;

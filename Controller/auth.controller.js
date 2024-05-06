@@ -2,6 +2,8 @@ import User from "../Models/user.model.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken'
 
+import generateTokenAndSetCookie from "../Utils/generateToken.js";
+
 import { errorHandler } from "../Utils/Error.js";
 
 export const registerUser = async (req, res, next) => {
@@ -26,7 +28,8 @@ export const registerUser = async (req, res, next) => {
     }
 
     // Hash the password using bcrypt
-    const hashPassword = bcrypt.hashSync(password, 10);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create a new user instance
     const newUser = new User({
@@ -34,39 +37,28 @@ export const registerUser = async (req, res, next) => {
       lastName,
       username,
       email,
-      password: hashPassword
+      password: hashedPassword
     });
 
-    // Save the new user to the database
-    await newUser.save();
+    if (newUser) {
+      // Generate JWT token here
+      generateTokenAndSetCookie(newUser._id, res);
+      await newUser.save();
 
-
-    const token = jwt.sign(
-      {
-        userId: newUser._id,
-        isAdmin: newUser.isAdmin
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1d",
-      }
-    );
-
-
-    res.cookie('access_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 864000
-    })
-
-    // Respond with success message
-    res.status(201).json({
-      message: "Sign up successful"
-    });
+      res.status(201).json({
+        _id: newUser._id,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        username: newUser.username,
+      });
+    } else {
+      res.status(400).json({ error: "Invalid user data" });
+    }
   } catch (error) {
-    // Handle unexpected errors and forward to the error handler
-    next(errorHandler(500, "Sorry! Something went wrong"));
+    console.log("Error in signup controller", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
+
 };
 
 export const loginUser = async (req, res, next) => {
@@ -89,27 +81,30 @@ export const loginUser = async (req, res, next) => {
       return res.status(401).json({ message: "Invalid Credentials" });
     }
 
-    const token = jwt.sign(
-      {
-        userId: validUser._id,
-        isAdmin: validUser.isAdmin
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1d",
-      }
-    );
+    generateTokenAndSetCookie(validUser._id, res);
 
-    const { password: pass, ...rest } = validUser._doc;
-
-    res.cookie('access_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 86400000 // 1 day in milliseconds
+    res.status(200).json({
+      _id: validUser._id,
+      firstName: validUser.firstName,
+      lastName: validUser.lastName,
+      username: validUser.username,
     });
-    res.status(200).json(rest);
   } catch (error) {
     console.error("Login Error:", error);
     return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+export const logout = (req, res) => {
+  try {
+    // Clear the access token cookie
+    res.cookie("access_token", "", { maxAge: 0 });
+
+    // Send a success response
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.log("Error in logout controller", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
