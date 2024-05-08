@@ -21,7 +21,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://jimmytechhub.com"],
+    origin: ["http://localhost:5173", "https://jimmypatel.tech"],
     credentials: true,
   })
 );
