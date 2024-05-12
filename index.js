@@ -26,9 +26,6 @@ app.use(
   })
 );
 
-app.use('/health', (req, res) => {
-  res.send('Server is running');
-});
 
 
 app.use('/api/contact', contactRoutes);
@@ -45,6 +42,11 @@ app.use((err, req, res, next) => {
     statusCode: statusCode,
   });
 });
+
+app.use('/', (req, res) => {
+  res.send('Server is running');
+});
+
 
 const PORT = process.env.PORT || 3000;
 
