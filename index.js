@@ -1,7 +1,10 @@
+// server.js
+
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import serverless from "serverless-http";
 
 import connectDB from './Config/db.js';
 import authRoutes from './Routes/auth.route.js'
@@ -44,5 +47,18 @@ app.use('/', (req, res) => {
   res.send('Server is running');
 });
 
-// Export the Express app
-export default app;
+const PORT = process.env.PORT || 3000;
+
+const startServer = async () => {
+  try {
+    await connectDB();
+    await cloudinaryConnect();
+    app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
+  } catch (error) {
+    console.error('Error starting server:', error);
+    process.exit(1); // Exit with non-zero status code to indicate failure
+  }
+};
+
+// Export your Express app as a serverless function handler
+export const handler = serverless(app);
