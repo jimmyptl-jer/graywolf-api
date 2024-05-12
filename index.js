@@ -26,6 +26,11 @@ app.use(
   })
 );
 
+app.use('/health', (req, res) => {
+  res.send('Server is running');
+});
+
+
 app.use('/api/contact', contactRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/project', projectRoutes);
