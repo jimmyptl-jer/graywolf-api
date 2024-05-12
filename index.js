@@ -60,5 +60,6 @@ const startServer = async () => {
   }
 };
 
+startServer();
 // Export your Express app as a serverless function handler
 export const handler = serverless(app);
